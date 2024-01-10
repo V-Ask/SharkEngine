@@ -4,9 +4,15 @@
 #include <vector>
 #include "Managers/InputManager.h"
 
+struct Triangle {
+	unsigned int VAO;
+	unsigned int VBO;
+	unsigned int program;
+};
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, SharkUtils::InputManager& inputManager);
-void drawTriangle();
+Triangle drawTriangle();
 
 const char* vertexShaderSource =
 "layout (location = 0) in vec3 aPos;\n"
@@ -105,31 +111,36 @@ unsigned int createShaderProgram(std::vector<unsigned int> shaders, char* infoLo
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 	}
-	glUseProgram(shaderProgram);
 	for (unsigned int& shader : shaders) {
 		glDeleteShader(shader);
 	}
+	glUseProgram(shaderProgram);
 	return shaderProgram;
 }
 
-void drawTriangle() {
+Triangle drawTriangle() {
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
 		0.0f, 0.5f, 0.0f
 	};
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 	char infoLog[512];
 	unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource, infoLog);
 
 	unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource, infoLog);
 
 	unsigned int shaderProgram = createShaderProgram({ vertexShader, fragmentShader }, infoLog);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
+	return { VAO, VBO, shaderProgram };
 }
