@@ -4,29 +4,23 @@
 #include <vector>
 #include "Managers/InputManager.h"
 
-struct Triangle {
-	unsigned int VAO;
-	unsigned int VBO;
-	unsigned int program;
-};
-
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, SharkUtils::InputManager& inputManager);
-Triangle drawTriangle();
+unsigned int buildShader();
 
-const char* vertexShaderSource =
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
+const char* vertexShaderSource ="#version 460 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+	"}\0";
 
-const char* fragmentShaderSource =
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"\n}";
+const char* fragmentShaderSource ="#version 460 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(0.82f, 0.21f, 222.0f/255.0f, 1.0f);\n"
+	"}\n\0";
 
 static void setupGLFW(int majorVer, int minorVer) {
 	glfwInit();
@@ -61,7 +55,23 @@ GLFWwindow* setupWindow(int majorVer, int minorVer, int winWidth, int winHeight,
 int main() {
 	GLFWwindow* window = setupWindow(4, 6, 1920, 1080, "SharkEngineTest");
 	SharkUtils::InputManager inputManager = SharkUtils::InputManager(window);
-	drawTriangle();
+
+	float vertices[] = {
+	-0.5f, -0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	0.0f, 0.5f, 0.0f
+	};
+
+	unsigned int shaderProg = buildShader();
+	unsigned int VAO, VBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 	while (!glfwWindowShouldClose(window))
 	{
 		//Checks input
@@ -69,6 +79,9 @@ int main() {
 		//Rendering commands
 		glClearColor(34.0f / 255.0f, 63.0f / 255.0f, 150.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glUseProgram(shaderProg);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		//Swaps the color buffer
 		glfwSwapBuffers(window);
 		//Checks if events are triggered
@@ -114,27 +127,10 @@ unsigned int createShaderProgram(std::vector<unsigned int> shaders, char* infoLo
 	for (unsigned int& shader : shaders) {
 		glDeleteShader(shader);
 	}
-	glUseProgram(shaderProgram);
 	return shaderProgram;
 }
 
-Triangle drawTriangle() {
-	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f
-	};
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+unsigned int buildShader() {
 	char infoLog[512];
 	unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource, infoLog);
 
@@ -142,5 +138,5 @@ Triangle drawTriangle() {
 
 	unsigned int shaderProgram = createShaderProgram({ vertexShader, fragmentShader }, infoLog);
 
-	return { VAO, VBO, shaderProgram };
+	return shaderProgram;
 }

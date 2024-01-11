@@ -30,6 +30,9 @@
     <ClCompile Include="Resources\Utils\ApplicationUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Managers\InputManager.h">
@@ -38,8 +41,13 @@
     <ClInclude Include="Resources\Utils\ApplicationUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Resources\Shaders\VertexShader.shader" />
+    <None Include="Resources\Shaders\FragmentShader.shader" />
   </ItemGroup>
 </Project>
