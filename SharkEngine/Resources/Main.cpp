@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "Managers/InputManager.h"
+#include "Utils/FileUtils.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, SharkUtils::InputManager& inputManager);
@@ -72,6 +73,9 @@ int main() {
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 	while (!glfwWindowShouldClose(window))
 	{
 		//Checks input
@@ -87,6 +91,10 @@ int main() {
 		//Checks if events are triggered
 		glfwPollEvents();
 	}
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shaderProg);
 	glfwTerminate();
 	return 0;
 }
