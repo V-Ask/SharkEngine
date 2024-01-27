@@ -4,6 +4,10 @@ namespace SharkUtils {
 	InputManager::InputManager(GLFWwindow* window) {
 		engineWindow = window;
 	}
+
+	InputManager::InputManager()
+	{
+	}
 	
 	bool InputManager::GetKey(int key) {
 		if (glfwGetKey(engineWindow, key) == GLFW_PRESS) {

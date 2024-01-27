@@ -143,12 +143,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Downloads\glad.c" />
+    <ClCompile Include="Resources\Engine.cpp" />
     <ClCompile Include="Resources\Utils\FileUtils.cpp" />
     <ClCompile Include="Resources\Utils\ApplicationUtil.cpp" />
     <ClCompile Include="Resources\Managers\InputManager.cpp" />
     <ClCompile Include="Resources\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Resources\Engine.h" />
     <ClInclude Include="Resources\Utils\FileUtils.h" />
     <ClInclude Include="Resources\Utils\ApplicationUtil.h" />
     <ClInclude Include="Resources\Managers\InputManager.h" />

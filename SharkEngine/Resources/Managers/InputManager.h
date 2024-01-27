@@ -5,6 +5,7 @@ namespace SharkUtils {
 	class InputManager {
 	public:
 		InputManager(GLFWwindow* window);
+		InputManager();
 		bool GetKey(int key);
 		bool GetKeyDown(int key);
 		bool GetKeyUp(int key);
